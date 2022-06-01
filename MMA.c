@@ -62,7 +62,7 @@ mma_error_t avg_register(uint8_t *avgID){
 mma_error_t avg_free(uint8_t avgID){
 	if (avgID >= 0 && avgID < MAX_AVERAGES){
 		struct MovingAverage *mma = &mmaList[avgID];
-		if (mma->state != AVG_UNUSED){
+		if (mma->state != AVG_USED){
 			return MMA_ERR_ID_UNREGISTERED;
 		}
 		mma->average = 0;
@@ -88,7 +88,9 @@ mma_error_t avg_free(uint8_t avgID){
 mma_error_t avg_moveTheAverage(uint8_t avgID, uint16_t newValue){
 	if (avgID >= 0 && avgID < MAX_AVERAGES){
 		struct MovingAverage *mma = &mmaList[avgID];				
-		
+		if (mma->state != AVG_USED){
+			return MMA_ERR_ID_UNREGISTERED;
+		}
 		//detect overflow
 		if ( (65535 - mma->sum + mma->average) < (newValue) ){//(mma->sum - mma->average + newValue) < mma->sum){
 			return MMA_ERR_OVERFLOW;
