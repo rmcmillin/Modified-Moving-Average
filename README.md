@@ -15,6 +15,15 @@ There are two definitions in **[mma.h](src/mma.h?raw=1)** that need to be config
 #define MAX_AVERAGES 2 
 ```
 
+Note: This was used for an AVR MCU so the following line is included in the .c file
+```c
+#include <avr/io.h>
+```
+Change to stdint.h if required
+```c
+#include <stdint.h>
+```
+
 ### Register
 Register for an ID by calling the function mma_error_t avg_register(uint8_t *avgID)
 ```c
