@@ -15,8 +15,7 @@
 struct MovingAverage{
 	avgState_t state; /**< USED or UNUSED */
 	uint16_t average; /**< Holds the current moving average */
-	uint32_t sum; /**< Holds the sum of the previous [NUMBER_OF_SAMPLES] samples */
-	uint8_t numberOfSamples; /**< used to prevent low averages when number of samples taken is less than [NUMBER_OF_SAMPLES]  */
+	uint32_t sum; /**< Holds the sum of the previous [NUMBER_OF_SAMPLES] samples */	
 };
 
 /**
@@ -42,8 +41,7 @@ mma_error_t avg_register(uint8_t *avgID){
 			//unused average found, initialize and return avgID to be used
 			mma->average = 0;
 			mma->state = AVG_USED;
-			mma->sum = 0;
-			mma->numberOfSamples = 0;
+			mma->sum = 0;			
 			*avgID = i;
 			return MMA_SUCCESS;
 		}
@@ -69,8 +67,7 @@ mma_error_t avg_free(uint8_t avgID){
 		}
 		mma->average = 0;
 		mma->state = AVG_UNUSED;
-		mma->sum = 0;
-		mma->numberOfSamples = 0;
+		mma->sum = 0;		
 	}
 	else{
 		return MMA_ERR_OUT_OF_BOUND;
@@ -81,8 +78,7 @@ mma_error_t avg_free(uint8_t avgID){
 /**
 * \brief Move the Average
 *
-* \details This function updates the average with the newest value.  It also detects overflows and low numbers when the number of measurements is lower than NUMBER_OF_SAMPLES
-*
+* \details This function updates the average with the newest value.  It also detects overflows and returns an error
 * \param[in]	avgID		The ID to update
 * \param[in]	newValue	The newest value to add to the moving average
 *
@@ -91,12 +87,7 @@ mma_error_t avg_free(uint8_t avgID){
 
 mma_error_t avg_moveTheAverage(uint8_t avgID, uint16_t newValue){
 	if (avgID >= 0 && avgID < MAX_AVERAGES){
-		struct MovingAverage *mma = &mmaList[avgID];
-		
-		//prevent low numbers when number of measurements is less than NUMBER_OF_SAMPLES
-		if (mma->numberOfSamples <= NUMBER_OF_SAMPLES){
-			mma->numberOfSamples++;
-		}
+		struct MovingAverage *mma = &mmaList[avgID];				
 		
 		//detect overflow
 		if ( (65535 - mma->sum + mma->average) < (newValue) ){//(mma->sum - mma->average + newValue) < mma->sum){
@@ -106,7 +97,7 @@ mma_error_t avg_moveTheAverage(uint8_t avgID, uint16_t newValue){
 		//move the average
 		mma->sum -= mma->average;
 		mma->sum += newValue;
-		mma->average = mma->sum / mma->numberOfSamples;
+		mma->average = mma->sum / NUMBER_OF_SAMPLES;
 	}
 	return MMA_ERR_OUT_OF_BOUND;
 }
@@ -150,8 +141,7 @@ mma_error_t avg_reset(uint8_t avgID){
 		if (mma->state != AVG_USED){
 			return MMA_ERR_ID_UNREGISTERED;
 		}
-		mma->average = 0;
-		mma->numberOfSamples = 0;
+		mma->average = 0;		
 		mma->state = AVG_USED; //we still want to keep it
 		mma->sum = 0;
 		return MMA_SUCCESS;
