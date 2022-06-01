@@ -50,7 +50,7 @@ typedef enum MMA_Error{
 
 mma_error_t avg_register(uint8_t *avgID);
 mma_error_t avg_free(uint8_t avgID);
-mma_error_t avg_moveTheAverage(uint8_t avgID, int16_t newValue);
-mma_error_t avg_getAverage(uint8_t avgID, int16_t *average);
+mma_error_t avg_moveTheAverage(uint8_t avgID, uint16_t newValue);
+mma_error_t avg_getAverage(uint8_t avgID, uint16_t *average);
 mma_error_t avg_reset(uint8_t avgID);
 

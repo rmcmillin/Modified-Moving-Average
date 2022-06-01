@@ -89,7 +89,7 @@ mma_error_t avg_free(uint8_t avgID){
 * \return	Returns 0 on success and a negative value on error
 */
 
-mma_error_t avg_moveTheAverage(uint8_t avgID, int16_t newValue){
+mma_error_t avg_moveTheAverage(uint8_t avgID, uint16_t newValue){
 	if (avgID >= 0 && avgID < MAX_AVERAGES){
 		struct MovingAverage *mma = &mmaList[avgID];
 		
@@ -122,7 +122,7 @@ mma_error_t avg_moveTheAverage(uint8_t avgID, int16_t newValue){
 * \return	returns 0 on success, negative value on error
 */
 
-mma_error_t avg_getAverage(uint8_t avgID, int16_t *average){
+mma_error_t avg_getAverage(uint8_t avgID, uint16_t *average){
 	if (avgID >= 0 && avgID < MAX_AVERAGES){
 		struct MovingAverage *mma = &mmaList[avgID];
 		if (mma->state != AVG_USED){
